@@ -1,0 +1,22 @@
+{
+    "server": {
+        "port": "8081"
+    },
+    "database": {
+        "host": "localhost",
+        "port": "4455",
+        "name": "test"
+    },
+    "view": {
+        "engine": "mustache",
+        "path": "/app/src/views",
+        "suffix": "html"
+    },
+    "rabbitmq": {
+        "protocol": "amqp",
+        "hostname": "localhost",
+        "port": 5672,
+        "username": "guest",
+        "password": "guest"
+    }
+}
