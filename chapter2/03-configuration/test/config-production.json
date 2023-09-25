@@ -1,0 +1,7 @@
+{
+  "redis": {
+    "host": "cloud.redis.lan",
+    "port": "6300",
+    "db": 2
+  }
+}
