@@ -13,9 +13,10 @@
     ],
   },
   "include": [
-    "./01-web-services/**/*.ts",
+    "**/*.ts"
   ],
   "exclude": [
     "node_modules",
+    "dist",
   ]
 }
