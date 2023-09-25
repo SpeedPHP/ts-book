@@ -1,0 +1,42 @@
+{
+    "server": {
+        "port": "8081"
+    },
+    "view": {
+        "engine": "pug",
+        "path": "./views",
+        "suffix": "html"
+    },
+    "static": "/static",
+    "favicon": "/favicon.ico",
+    "compression": {
+        "level": 9
+    },
+    "cookie": {
+        "secret": "catme",
+        "options": {}
+    },
+    "session": {
+        "trust proxy": false,
+        "secret": "keyboard cat",
+        "resave": false,
+        "saveUninitialized": true,
+        "cookie": {
+            "secure": false
+        }
+    },
+    "mysql" : {
+        "master" : {
+            "host":"localhost", 
+            "user": "root", 
+            "password": "root",
+            "database": "test"
+        },
+        "slave" :[{
+            "host":"localhost", 
+            "user": "root", 
+            "password": "root",
+            "database": "test"
+        }]
+    }
+}
