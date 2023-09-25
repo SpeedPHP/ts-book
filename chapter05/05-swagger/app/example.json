@@ -1,0 +1,628 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "typespeed-swagger-example",
+    "description": "The example for typespeed-swagger.",
+    "license": {
+      "name": "MIT"
+    },
+    "version": "0.1.0"
+  },
+  "tags": [
+    {
+      "name": "Page"
+    },
+    {
+      "name": "TestRequest"
+    }
+  ],
+  "paths": {
+    "/request/res": {
+      "get": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testRes",
+        "operationId": "testResGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/request/query": {
+      "get": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testQuery",
+        "operationId": "testQueryGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "style": "form",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ]
+      }
+    },
+    "/request/queryArray": {
+      "get": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "queryArray",
+        "operationId": "queryArrayGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "style": "form",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ]
+      }
+    },
+    "/request/queryDataC": {
+      "get": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "queryDataC",
+        "operationId": "queryDataCGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "style": "form",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ]
+      }
+    },
+    "/request/void": {
+      "get": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testVoid",
+        "operationId": "testVoidGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "style": "form",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ]
+      }
+    },
+    "/request/string": {
+      "get": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testString",
+        "operationId": "testStringGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "style": "form",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ]
+      }
+    },
+    "/request/boolean": {
+      "get": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testBoolean",
+        "operationId": "testBooleanGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "style": "form",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ]
+      }
+    },
+    "/request/any": {
+      "get": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testAny",
+        "operationId": "testAnyGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "style": "form",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ]
+      }
+    },
+    "/request/object": {
+      "get": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testObject",
+        "operationId": "testObjectGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "style": "form",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ]
+      }
+    },
+    "/request/objectValue": {
+      "get": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testObjectValue",
+        "operationId": "testObjectValueGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "style": "form",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ]
+      }
+    },
+    "/request/body": {
+      "post": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testBody",
+        "operationId": "testBodyPost",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/DataB"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/request/stringvalue": {
+      "post": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testValueString",
+        "operationId": "testValueStringPost",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DataB"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/request/stringany": {
+      "post": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testValueAny",
+        "operationId": "testValueAnyPost",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/request/stringvoid": {
+      "post": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testValueVoid",
+        "operationId": "testValueVoidPost",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/request/stringobjcet": {
+      "post": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testValueObject",
+        "operationId": "testValueObjectPost",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/request/stringobjcetstring": {
+      "post": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testValueObjectString",
+        "operationId": "testValueObjectStringPost",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/request/form": {
+      "post": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testForm",
+        "operationId": "testFormPost",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "style": "form",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/request/param/:id": {
+      "get": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "testParam",
+        "operationId": "testParamGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "style": "form",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ]
+      }
+    },
+    "/test/res": {
+      "get": {
+        "tags": [
+          "TestRequest"
+        ],
+        "summary": "testRes",
+        "operationId": "testResGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/redis": {
+      "get": {
+        "tags": [
+          "TestRequest"
+        ],
+        "summary": "redisTest",
+        "operationId": "redisTestGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/rabbitmq": {
+      "get": {
+        "tags": [
+          "TestRequest"
+        ],
+        "summary": "sendByMQClass",
+        "operationId": "sendByMQClassGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/test/query": {
+      "get": {
+        "tags": [
+          "TestRequest"
+        ],
+        "summary": "testQuery",
+        "operationId": "testQueryGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "style": "form",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ]
+      }
+    },
+    "/test/body": {
+      "post": {
+        "tags": [
+          "TestRequest"
+        ],
+        "summary": "testBody",
+        "operationId": "testBodyPost",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/test/form": {
+      "post": {
+        "tags": [
+          "TestRequest"
+        ],
+        "summary": "testForm",
+        "operationId": "testFormPost",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "style": "form",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/test/param/:id": {
+      "get": {
+        "tags": [
+          "TestRequest"
+        ],
+        "summary": "testParam",
+        "operationId": "testParamGet",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "style": "form",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DataC": {
+        "title": "DataC",
+        "type": "object",
+        "properties": {
+          "paramCString": {
+            "type": "string"
+          }
+        }
+      },
+      "DataB": {
+        "title": "DataB",
+        "type": "object",
+        "properties": {
+          "paramBNumber": {
+            "type": "number"
+          },
+          "paramBObjC": {
+            "$ref": "#/components/schemas/DataC"
+          }
+        }
+      },
+      "UserDto": {
+        "title": "UserDto",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

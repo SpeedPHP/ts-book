@@ -1,0 +1,8 @@
+{
+  "name": "typespeed-swagger-example",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The example for typespeed-swagger.",
+  "author": "speedphp",
+  "license": "MIT"
+}
