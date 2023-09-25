@@ -1,0 +1,46 @@
+{
+    "view": {
+        "engine": "pug",
+        "path": "./views",
+        "suffix": "html"
+    },
+    "static": "/static",
+    "favicon": "/static/favicon.ico",
+    "compression": {
+        "level": 9
+    },
+    "cookie": {
+        "secret": "catme",
+        "options": {}
+    },
+    "session": {
+        "trust proxy": false,
+        "secret": "keyboard cat",
+        "resave": false,
+        "saveUninitialized": true,
+        "cookie": {
+            "secure": false
+        }
+    },
+    "mysql": {
+        "master": {
+            "host": "localhost",
+            "user": "root",
+            "password": "root",
+            "database": "test"
+        },
+        "slave": [
+            {
+                "host": "localhost",
+                "user": "root",
+                "password": "root",
+                "database": "test"
+            }
+        ]
+    },
+    "redis": {
+        "host": "localhost",
+        "port": "6379",
+        "db": 0
+    }
+}
