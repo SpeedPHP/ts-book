@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "target": "ES2017",
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+  },
+  "include": [
+    "./01-web-services/**/*.ts",
+  ],
+  "exclude": [
+    "node_modules",
+  ]
+}
