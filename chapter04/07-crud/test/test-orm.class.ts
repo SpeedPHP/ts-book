@@ -1,5 +1,6 @@
 import { GetMapping, PostMapping, upload } from "../src/route-mapping.decorator";
 import { autoware, component, log } from "../src/speed";
+import CheckUserModel from "./check-user-model.class";
 import UserModel from "./user-model.class";
 
 @component
@@ -7,6 +8,9 @@ export default class TestOrm {
 
     @autoware("user")
     private userModel: UserModel;
+
+    @autoware("check_user")
+    private checkUserModel: CheckUserModel;
 
     @GetMapping("/orm/first")
     async firstTest(req, res) {
@@ -41,6 +45,13 @@ export default class TestOrm {
         log(this.userModel);
         const results = await this.userModel.newUsers();
         res.send("new user test, to " + results);
+    }
+
+    @GetMapping("/orm/login")
+    async testLoginAdd(req, res) {
+        const userName = req.query.name;
+        const results = await this.checkUserModel.incr({ name: userName }, "login_count");
+        res.send(userName + " login count add: " + results);
     }
  
     @PostMapping("/orm/edit")
