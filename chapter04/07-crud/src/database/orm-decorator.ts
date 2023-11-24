@@ -18,7 +18,7 @@ export default class Model {
         return this._page
     }
 
-    async find<T>(conditions, _sort?, fields = '*', limit = undefined): Promise<T[]> {
+    async findAll<T>(conditions, _sort?, fields = '*', limit = undefined): Promise<T[]> {
         let sort = _sort ? ' ORDER BY ' + _sort : '';
         const { sql, values } = this.where(conditions);
         let newSql = 'SELECT ' + fields + ' FROM ' + this.table + ' WHERE ' + sql + sort;
@@ -55,8 +55,8 @@ export default class Model {
         return result.insertId;
     }
 
-    async findOne<T>(conditions, sort, fields = '*'): Promise<T> {
-        let res = await this.find(conditions, sort, fields, 1);
+    async find<T>(conditions, sort, fields = '*'): Promise<T> {
+        let res = await this.findAll(conditions, sort, fields, 1);
         return res.length > 0 ? <T>res[0] : null;
     }
 
