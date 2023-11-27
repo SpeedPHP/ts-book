@@ -34,8 +34,8 @@
         },
         "slave" :[{
             "host":"localhost", 
-            "user": "root", 
-            "password": "root",
+            "user": "readonly", 
+            "password": "123456",
             "database": "test"
         }]
     }
