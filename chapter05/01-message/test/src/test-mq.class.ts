@@ -58,7 +58,7 @@ export default class TestMq {
         const queue = 'myqueues';
         const queue2 = 'myqueues2';
         await channel.checkQueue(queue);
-        await channel.checkQueue(queue2);
+        await channel.assertQueue(queue2);
         await channel.consume(queue, (message) => {
             console.log(" [x] Received '%s'", message.content.toString());
         }, { noAck: true });
