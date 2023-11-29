@@ -4,7 +4,7 @@
         "path": "./src/views",
         "suffix": "html"
     },
-    "static": "/static",
+
     "compression": {
         "level": 9
     },
@@ -25,14 +25,14 @@
         "master": {
             "host": "localhost",
             "user": "root",
-            "password": "root",
+            "password": "123456",
             "database": "test"
         },
         "slave": [
             {
                 "host": "localhost",
                 "user": "root",
-                "password": "root",
+                "password": "123456",
                 "database": "test"
             }
         ]

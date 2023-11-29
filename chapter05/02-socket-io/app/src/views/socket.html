@@ -2,9 +2,9 @@
 
 <head>
     <title>Socket Test</title>
-    <script src="/socket.io.4.7.1.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.1/socket.io.min.js"></script>
     <script>
-        var socket = io('http://localhost:8080');
+        var socket = io('http://localhost:8081');
         socket.on('connect', function() {
             console.log('connected');
         });

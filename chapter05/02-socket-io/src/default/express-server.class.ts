@@ -114,7 +114,6 @@ export default class ExpressServer extends ServerFactory {
 
         if (this.static) {
             const staticPath = this.mainPath + this.static;
-            console.log(staticPath);
             this.app.use(express.static(staticPath))
         }
         setRouter(this.app);

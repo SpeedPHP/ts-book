@@ -12,7 +12,7 @@ class Main {
         // this.server.setMiddleware(basicAuth({
         //     users: { 'admin': 'supersecret' }
         // }));
-        appServer = this.server.start(8080);
+        appServer = this.server.start(8081);
         log('start application');
     }
 }

@@ -1,5 +1,37 @@
 {
-  "main": "src/typespeed.ts",
+  "name": "typespeed",
+  "version": "2.4.1",
+  "description": "A new Framework for TypeScript.",
+  "author": "speedphp",
+  "license": "MIT License",
+  "scripts": {
+    "test": "mocha --require ts-node/register test/**/*.ts --exit",
+    "test-with-coverage": "nyc --reporter=lcov npm test",
+    "start": "ts-node --transpile-only app/src/main.ts",
+    "build": "tsc -p .",
+    "postbuild": "cp src/typespeed.d.ts dist/typespeed.d.ts && cp -r src/default/pages dist/default/pages && cp -r src/scaffold/templates dist/scaffold/templates",
+    "prebuild": "rm -rf dist",
+    "prepublishOnly": "npm version patch && npm run build",
+    "upgrade": "npm version minor"
+  },
+  "main": "dist/typespeed.js",
+  "bin": {
+    "typespeed": "./dist/scaffold/command.js"
+  },
+  "homepage": "https://github.com/speedphp/typespeed#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/speedphp/typespeed.git"
+  },
+  "keywords": [
+    "framework",
+    "express",
+    "web",
+    "app",
+    "api",
+    "model",
+    "middleware"
+  ],
   "dependencies": {
     "amqplib": "0.10.3",
     "commander": "^9.4.0",
