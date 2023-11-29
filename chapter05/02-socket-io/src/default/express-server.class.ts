@@ -11,7 +11,6 @@ import { setRouter } from "../route.decorator";
 import { SocketIo } from "../default/socket-io.class";
 import { value } from "../typespeed";
 import { bean, error, autoware, resource } from "../core.decorator";
-import { Redis } from "./redis.class";
 import AuthenticationFactory from "../factory/authentication-factory.class";
 
 export default class ExpressServer extends ServerFactory {
@@ -42,9 +41,6 @@ export default class ExpressServer extends ServerFactory {
 
     @value("MAIN_PATH")
     private mainPath: string;
-
-    @autoware
-    private redisClient: Redis;
 
     @autoware
     public authentication: AuthenticationFactory;
@@ -88,10 +84,6 @@ export default class ExpressServer extends ServerFactory {
             const sessionConfig = this.session;
             if (sessionConfig["trust proxy"] === 1) {
                 this.app.set('trust proxy', 1);
-            }
-            if (this.redisConfig) {
-                const RedisStore = connectRedis(expressSession);
-                sessionConfig["store"] = new RedisStore({ client: this.redisClient });
             }
 
             this.app.use(expressSession(sessionConfig));
