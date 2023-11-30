@@ -7,16 +7,15 @@ export default class TestSocket {
 
     static loginUsers: Map<string, string> = new Map<string, string>();
 
-    @SocketIo.onConnected
-    public connected(socket, next) {
-        // 从 names 里面取出一个名字
-        let name = TestSocket.names.pop();
-        TestSocket.loginUsers.set(socket.id, name);
-        //io.sockets.emit("all", "We have a new member: " + name);
-        //console.log(socket.handshake);
-        //console.log(socket.id);
-        //next(new Error("test-error"));
-    }
+@SocketIo.onConnected
+public connected(socket, next) {
+    let name = TestSocket.names.pop();
+    TestSocket.loginUsers.set(socket.id, name);
+    io.sockets.emit("all", "We have a new member: " + name);
+    //console.log(socket.handshake.auth);
+    //console.log(socket.id);
+    //next(new Error("test-error"));
+}
 
     @SocketIo.onDisconnect
     public disconnet(socket, reason) {
