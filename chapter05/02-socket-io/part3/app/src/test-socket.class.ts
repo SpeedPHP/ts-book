@@ -43,6 +43,12 @@ public connected(socket, next) {
         io.to("private-room").emit("all", TestSocket.loginUsers.get(socket.id) + " joined private-room");
     }
 
+    @SocketIo.onEvent("leave") 
+    public leave(socket, message) {
+        socket.leave("private-room");
+        io.to("private-room").emit("all", TestSocket.loginUsers.get(socket.id) + " leaved private-room");
+    }
+
     @SocketIo.onEvent("say-inroom") 
     public sayInRoom(socket, message) {
         io.to("private-room").emit("all", TestSocket.loginUsers.get(socket.id) + " said in Room: " + message);
