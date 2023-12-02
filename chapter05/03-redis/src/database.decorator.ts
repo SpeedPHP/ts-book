@@ -1,5 +1,5 @@
 import { ResultSetHeader } from 'mysql2';
-import { log, getBean } from './speed';
+import { log, getBean } from './core.decorator';
 import CacheFactory from './factory/cache-factory.class';
 import DataSourceFactory from './factory/data-source-factory.class';
 
@@ -72,7 +72,7 @@ function select(sql: string) {
 
 function resultType(dataClass) {
     return function (target, propertyKey: string) {
-        resultTypeMap.set([target.constructor.name, propertyKey].toString(), new dataClass());
+        resultTypeMap.set([target.constructor.name, propertyKey].toString(), dataClass);
         //never return
     };
 }

@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import * as express from "express";
 import * as consolidate from "consolidate";
 import * as serveFavicon from "serve-favicon";
@@ -7,8 +8,10 @@ import * as expressSession from "express-session";
 import * as connectRedis from "connect-redis";
 import ServerFactory from "../factory/server-factory.class";
 import { setRouter } from "../route.decorator";
-import { bean, log, value, error, autoware } from "../speed";
-import Redis from "./redis.class";
+import { value } from "../typespeed";
+import { bean, log, error, autoware } from "../core.decorator";
+import { Redis } from "./redis.class";
+import AuthenticationFactory from "../factory/authentication-factory.class";
 
 export default class ExpressServer extends ServerFactory {
 
@@ -36,6 +39,9 @@ export default class ExpressServer extends ServerFactory {
     @autoware
     private redisClient: Redis;
 
+    @autoware
+    public authentication: AuthenticationFactory;
+
     @bean
     public getSever(): ServerFactory {
         const server = new ExpressServer();
@@ -47,15 +53,15 @@ export default class ExpressServer extends ServerFactory {
         this.middlewareList.push(middleware);
     }
 
-    public start(port: number) {
+    public start(port: number, callback?: Function): any {
+        this.app.use(this.authentication.afterCompletion);
         this.middlewareList.forEach(middleware => {
             this.app.use(middleware);
         });
 
         this.setDefaultMiddleware();
-        this.app.listen(port, () => {
-            log("server start at port: " + port);
-        });
+ 
+        return this.app.listen(port, callback);
     }
 
     private setDefaultMiddleware() {
@@ -81,11 +87,6 @@ export default class ExpressServer extends ServerFactory {
             this.app.use(expressSession(sessionConfig));
         }
 
-        if (this.static) {
-            const staticPath = process.cwd() + this.static;
-            this.app.use(express.static(staticPath))
-        }
-
         if (this.favicon) {
             const faviconPath = process.cwd() + this.favicon;
             this.app.use(serveFavicon(faviconPath));
@@ -95,14 +96,24 @@ export default class ExpressServer extends ServerFactory {
             this.app.use(compression(this.compression));
         }
 
-        this.app.use(cookieParser(this.cookieConfig["secret"] || undefined, this.cookieConfig["options"] || {}));
+        if (this.cookieConfig) {
+            this.app.use(cookieParser(this.cookieConfig["secret"] || undefined, this.cookieConfig["options"] || {}));
+        }
 
+        this.app.use(this.authentication.preHandle);
+
+        if (this.static) {
+            const staticPath = process.cwd() + this.static;
+            this.app.use(express.static(staticPath))
+        }
         setRouter(this.app);
 
-        this.app.use((req, res, next) => {
+        const errorPageDir = __dirname + "/pages";
+        this.app.use((req, res) => {
             error("404 not found, for page: " + req.url);
+            res.status(404);
             if (req.accepts('html')) {
-                res.render(process.cwd() + "/static/error-page/404.html");
+                res.type('html').send(fs.readFileSync(errorPageDir + "/404.html", "utf-8"));
             } else if (req.accepts('json')) {
                 res.json({ error: 'Not found' });
             } else {
@@ -117,7 +128,7 @@ export default class ExpressServer extends ServerFactory {
             error(err);
             res.status(err.status || 500);
             if (req.accepts('html')) {
-                res.render(process.cwd() + "/static/error-page/500.html");
+                res.type('html').send(fs.readFileSync(errorPageDir + "/500.html", "utf-8"));
             } else if (req.accepts('json')) {
                 res.json({ error: 'Internal Server Error' });
             } else {

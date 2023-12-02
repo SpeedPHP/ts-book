@@ -1,24 +1,11 @@
-import { getMapping, postMapping } from "../src/route.decorator";
-import { resource, component, log, autoware } from "../src/speed";
+import { resource, component, log, autoware, schedule, getMapping, postMapping, Redis } from "../../src/typespeed";
 import UserModel from "./user-model.class";
-import Redis from "../src/default/redis.class";
 
 @component
 export default class TestOrm {
 
     @resource("user")
     private userModel: UserModel;
-
-    @autoware
-    private redisObj: Redis;
-
-    @getMapping("/redis")
-    async redisTest() {
-        await this.redisObj.set("redisKey", "Hello World");
-        const value = await this.redisObj.get("redisKey");
-        log(value)
-        return "get from redis: " + value;
-    }
 
     @getMapping("/orm/first")
     async firstTest(req, res) {
@@ -40,32 +27,37 @@ export default class TestOrm {
 
     @getMapping("/orm/count")
     async countTest(req, res) {
-        const results = await this.userModel.count();
-        res.send(results);
+        const total = await this.userModel.count();
+        res.send({"count": total});
     }
 
     @getMapping("/orm/new")
     async newUserTest(req, res) {
-        const results = await this.userModel.newUsers();
-        res.send("new user test, to " + results);
+        const newId = await this.userModel.newUsers();
+        res.send({"newId": newId});
     }
 
     @getMapping("/orm/page/calculate")
     async calculatePage(req, res) {
         const pages = this.userModel.pager(15, 376);
-        res.send("pages calculate result: " + JSON.stringify(pages));
+        res.json(pages);
     }
 
     @getMapping("/orm/pages/:id")
     async findPage(req, res) {
         const results = await this.userModel.findAll("1", { id: -1 }, "*", { page: req.params.id, pageSize: 3 });
         log(this.userModel.page);
-        res.send("pages find result: " + JSON.stringify(results));
+        res.json(results);
     }
 
     @postMapping("/orm/edit")
     async updateTest(req, res) {
-        const results = await this.userModel.editUser(req.body.id, req.body.name);
-        res.send(results);
+        const effectRows = await this.userModel.editUser(req.body.id, req.body.name);
+        res.send({"effectRows": effectRows});
+    }
+
+    //@schedule("* * * * * *")
+    myTimer() {
+        log("myTimer running");
     }
 }

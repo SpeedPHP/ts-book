@@ -1,5 +1,4 @@
-import { Model } from "../src/database.decorator";
-import { log } from "../src/speed";
+import { log, Model } from "../../src/typespeed";
 import UserDto from "./entities/user-dto.class";
 
 export default class UserModel extends Model {
@@ -9,24 +8,25 @@ export default class UserModel extends Model {
         const users = await this.findAll({
             id: { $lt: 10, $lte: 20 }, "name": { $like: "%a%" },
             $or: [{ id: 1 }, { id: 2 }]
-        });
+        }, "id asc", "*", { page: 1, pageSize: 10 });
         log("users", users);
         return "getUsers";
     }
 
     async getUser(id: number) {
-        const user = await this.find({ id: id }, "");
+        const user = await this.find({ id: id }, "id asc", "*");
         log("user", user);
         return "getUser";
     }
 
     async newUsers() {
-        const users = await this.create([
-            new UserDto(30, "UserDto 30"),
-            new UserDto(31, "UserDto 31"),
-            { id: 33, name: "UserDto 33" }
+        const newId = this.random(1000, 2000);
+        await this.create([
+            new UserDto(newId, "UserDto " + newId),
+            new UserDto(newId+1, "UserDto " + (newId+1)),
+            { id: newId+2, name: "UserDto " + (newId+2) },
         ]);
-        return "newUsers";
+        return newId;
     }
 
     async remove(id: number) {
@@ -34,13 +34,17 @@ export default class UserModel extends Model {
         return "remove rows: " + result;
     }
 
-    async count() {
+    async count():Promise<number> {
         const result = await this.findCount("1");
-        return "we had users : " + result;
+        return result;
     }
 
     async editUser(id: number, name: string) {
-        const result = await this.update({ id: id }, { name: name });
-        return "edit user: " + result;
+        const effectRows = await this.update({ id: id }, { name: name });
+        return effectRows;
+    }
+
+    private random(min, max) {
+        return Math.round(Math.random() * (max - min)) + min;
     }
 }

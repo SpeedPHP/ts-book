@@ -1,6 +1,5 @@
-import { bean, log } from "../src/speed";
 import * as tracer from "tracer";
-import LogFactory from "../src/factory/log-factory.class";
+import { bean, LogFactory } from "../../src/typespeed";
 
 export default class CustomLog extends LogFactory {
     private logger = tracer.console({
@@ -18,10 +17,17 @@ export default class CustomLog extends LogFactory {
     }
 
     public log(message?: any, ...optionalParams: any[]) : void{
+        if(process.env.LOG === "CLOSE") return;
         this.logger.log(message, ...optionalParams);
     }
 
     public error(message?: any, ...optionalParams: any[]) : void {
         this.logger.error(message, ...optionalParams);
+    }
+
+    public debug(message?: any, ...optionalParams: any[]) : void {
+        if(process.env.NODE_ENV === "development"){
+            this.logger.debug(message, ...optionalParams);
+        }
     }
 }
