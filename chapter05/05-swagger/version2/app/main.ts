@@ -13,7 +13,7 @@ class Main {
     public main() {
         const packageJson = path.join(__dirname, "./package.json");
         swaggerMiddleware(this.server.app, null, packageJson);
-        appServer = this.server.start(8082);
+        appServer = this.server.start(8081);
     }
 }
 export default () => {
