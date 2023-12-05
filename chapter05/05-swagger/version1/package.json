@@ -4,9 +4,7 @@
   "description": "The Swagger plugin for the TypeSpeed framework.",
   "main": "dist/index.js",
   "scripts": {
-    "watch": "nodemon ./ ",
-    "test": "ts-node -C ttypescript app/main.ts",
-    "build": "ttsc index.ts"
+    "test": "ts-node -C ttypescript app/main.ts"
   },
   "homepage": "https://github.com/speedphp/typespeed-swagger#readme",
   "repository": {
