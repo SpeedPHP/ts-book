@@ -2,8 +2,6 @@ import { app, autoware, ServerFactory } from "typespeed";
 import { swaggerMiddleware } from "../index";
 import * as path from "path";
 
-let appServer = null;
-
 @app
 class Main {
 
@@ -13,11 +11,6 @@ class Main {
     public main() {
         const packageJson = path.join(__dirname, "./package.json");
         swaggerMiddleware(this.server.app, null, packageJson);
-        appServer = this.server.start(8081);
+        this.server.start(8081);
     }
 }
-export default () => {
-    if (appServer != null) {
-        appServer.close();
-    }
-};
