@@ -44,7 +44,8 @@
     "reflect-metadata": "0.1.13",
 		"typescript-rtti": "latest",
     "swagger-ui-express":"4.6.3",
-    "typespeed": "latest"
+    "typespeed": "latest",
+    "typespeed-swagger": "latest"
   },
   "devDependencies": {
 		"ttypescript": "1.x"

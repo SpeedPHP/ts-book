@@ -1,0 +1,42 @@
+{
+  "name": "typespeed-swagger",
+  "version": "0.0.1",
+  "description": "The Swagger plugin for the TypeSpeed framework.",
+  "main": "dist/index.js",
+  "scripts": {
+    "watch": "nodemon ./ ",
+    "test": "ts-node -C ttypescript app/main.ts",
+    "build": "ttsc index.ts"
+  },
+  "homepage": "https://github.com/speedphp/typespeed-swagger#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/speedphp/typespeed-swagger.git"
+  },
+  "author": "speedphp",
+  "license": "MIT",
+  "dependencies": {
+    "reflect-metadata": "0.1.13",
+		"typescript-rtti": "latest",
+    "swagger-ui-express":"4.6.3",
+    "typespeed": "latest"
+  },
+  "devDependencies": {
+		"@types/node": "18.0.6",
+		"ttypescript": "1.x",
+    "typescript": "4.7.4",
+    "ts-node": "^10.9.1"
+	},
+  "keywords": [
+    "typespeed",
+    "express",
+    "typescript-rtti",
+    "jsdoc",
+    "swagger",
+    "api",
+    "rtti",
+    "middleware",
+    "reflection",
+    "reflect"
+  ]
+}

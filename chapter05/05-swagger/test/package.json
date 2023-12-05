@@ -1,0 +1,18 @@
+{
+    "name": "test",
+    "version": "1.0.0",
+    "description": "这是测试程序。",
+    "license": "ISC",
+    "scripts": {
+        "watch": "nodemon",
+        "test": "ts-node src/main.ts",
+        "start": "ts-node --transpile-only src/main.ts",
+        "build": "tsc -p ."
+    },
+    "dependencies": {
+        "@types/node": "^18.0.6",
+        "tracer": "^1.1.6",
+        "typespeed": "latest",
+        "typespeed-swagger": "^1.1.6"
+    }
+}
