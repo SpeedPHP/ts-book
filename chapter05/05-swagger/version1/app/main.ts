@@ -1,4 +1,4 @@
-import { app, log, autoware, ServerFactory } from "typespeed";
+import { app, autoware, ServerFactory } from "typespeed";
 import { swaggerMiddleware } from "../index";
 
 @app

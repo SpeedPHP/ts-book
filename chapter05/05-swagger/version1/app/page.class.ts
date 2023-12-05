@@ -13,7 +13,7 @@ export default class Page {
     }
 
     @getMapping("/request/query")
-    async testQuery(req, res, @reqQuery("id") id: number): Promise<DataC> {
+    async testQuery(req, res, @reqQuery id: number): Promise<DataC> {
         log("id: " + id);
         return Promise.resolve(new DataC("value to C"));
     }
@@ -31,7 +31,7 @@ export default class Page {
     }
 
     @getMapping("/request/param/:id")
-    testParam(@res res, @reqParam("id") id: number) : DataA {
+    testParam(@res res, @reqParam id: number) : DataA {
         log("id: " + id);
         return new DataA(100, "A to B", new DataB(200, new DataC("AB to C")), [new DataC("A to C")]);
     }
