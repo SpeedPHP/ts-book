@@ -1,4 +1,4 @@
-import { createServer, Server, IncomingMessage, ServerResponse } from "http";
+import { createServer, IncomingMessage, ServerResponse } from "http";
 import { createConnection, Connection } from "mysql2";
 
 interface Page {
@@ -13,8 +13,9 @@ class First implements Page {
 
 class User implements Page {
     page(response: ServerResponse): void {
-        const connection: Connection = createConnection({ host: 'localhost', user: 'root', "password": "qwer1234", database: 'test' });
+        const connection: Connection = createConnection({ host: 'localhost', user: 'root', "password": "123456", database: 'test' });
         connection.query('SELECT * FROM `user`', (err, results) => {
+            console.log(err)
             response.end(JSON.stringify(results));
         });
     }
@@ -30,7 +31,7 @@ const router = new Map<string, Page>();
 router.set("/first", new First());
 router.set("/main", new Root());
 router.set("/user", new User());
-const server = createServer((request: IncomingMessage, response: ServerResponse) => {
+createServer((request: IncomingMessage, response: ServerResponse) => {
     let page = router.get(request.url === undefined ? "" : request.url);
     if (page === undefined) {
         page = new Root();

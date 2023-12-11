@@ -1,4 +1,4 @@
-import { createServer, Server, IncomingMessage, ServerResponse } from "http";
+import { createServer, IncomingMessage, ServerResponse } from "http";
 import { createConnection, Connection } from "mysql2";
 
 interface Page {
@@ -36,7 +36,7 @@ class Database {
     }
     static getInstance() {
         if (!Database.instance) {
-            Database.instance = new Database(createConnection({ host: 'localhost', user: 'root', "password": "qwer1234", database: 'test' }));
+            Database.instance = new Database(createConnection({ host: 'localhost', user: 'root', "password": "root", database: 'test' }));
         }
         return Database.instance;
     }
@@ -45,12 +45,11 @@ class Database {
     }
 }
 
-
 const router = new Map<string, Page>();
 router.set("/first", new First());
 router.set("/main", new Root());
 router.set("/user", new User());
-const server = createServer((request: IncomingMessage, response: ServerResponse) => {
+createServer((request: IncomingMessage, response: ServerResponse) => {
     let page = router.get(request.url === undefined ? "" : request.url);
     if (page === undefined) {
         page = new Root();
