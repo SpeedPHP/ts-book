@@ -1,10 +1,13 @@
 let appClose;
-before(() => {
+before(function () {
+    this.timeout(50000);
+    process.env["LOG"] = "CLOSE";
     appClose = require("../app/src/main");
 });
 
-after(() => {
+after((done) => {
     if(appClose != null){
         appClose.default();
     }
+    done();
 });

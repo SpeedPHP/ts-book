@@ -1,5 +1,6 @@
 import * as express from "express";
-import IoRedis from "ioredis";
+import { Redis as IoRedis, RedisKey } from "ioredis";
+import { Server as IoServer } from "socket.io";
 import "reflect-metadata";
 
 /**设置路由中间件 */
@@ -139,7 +140,7 @@ declare class Model {
  * 被装饰的类将作为应用程序入口，框架将启动该类的 main 方法
  */
 declare function app<T extends {
-    new (...args: any[]): {};
+    new(...args: any[]): {};
 }>(constructor: T): void;
 /**获取配置文件中的配置项 */
 declare function config(node: string): any;
@@ -169,20 +170,22 @@ declare function after(constructorFunction: any, methodName: string): (target: a
 declare function schedule(cronTime: string | Date): (target: any, propertyKey: string) => void;
 /**RabbitMQ 监听装饰器，参数是监听的队列名称，当接受到消息时将执行被装饰方法 */
 declare function rabbitListener(queue: string): (target: any, propertyKey: string) => void;
+/**Redis 监听装饰器，参数是监听的队列名称，当接受到消息时将执行被装饰方法 */
+declare function redisSubscriber(target: any, propertyKey: string): void;
 /** request 对象装饰器，作为路由页面方法参数，获取 request 对象 */
-declare function req(target: any, propertyKey: string, parameterIndex: number) : void;
+declare function req(target: any, propertyKey: string, parameterIndex: number): void;
 /** response 对象装饰器，作为路由页面方法参数，获取 response 对象 */
-declare function res(target: any, propertyKey: string, parameterIndex: number) : void;
+declare function res(target: any, propertyKey: string, parameterIndex: number): void;
 /** next 函数装饰器，作为路由页面方法参数，获取  next 函数 */
-declare function next(target: any, propertyKey: string, parameterIndex: number) : void;
+declare function next(target: any, propertyKey: string, parameterIndex: number): void;
 /** request.body 对象装饰器，作为路由页面方法参数，获取 request.body 对象 */
-declare function reqBody(target: any, propertyKey: string, parameterIndex: number) : void;
+declare function reqBody(target: any, propertyKey: string, parameterIndex: number): void;
 /** request.param 值装饰器，作为路由页面方法参数，获取 request.params 内容 */
-declare function reqParam(target: any, propertyKey: string, parameterIndex: number) : void;
+declare function reqParam(target: any, propertyKey: string, parameterIndex: number): void;
 /** request.query 值装饰器，作为路由页面方法参数，获取 request.query 内容 */
-declare function reqQuery(target: any, propertyKey: string, parameterIndex: number) : void;
+declare function reqQuery(target: any, propertyKey: string, parameterIndex: number): void;
 /** request 表单值装饰器，作为路由页面方法参数，获取 request.body 表单内容 */
-declare function reqForm(paramName: string) : (target: any, propertyKey: string, parameterIndex: number) => void;
+declare function reqForm(paramName: string): (target: any, propertyKey: string, parameterIndex: number) => void;
 
 /**框架 Web 服务工厂类 */
 declare abstract class ServerFactory {
@@ -275,7 +278,22 @@ declare abstract class AuthenticationFactory {
 declare class Redis extends IoRedis {
     /**获取 Redis 实例 */
     getRedis(): Redis;
-    constructor(config: any);
+    /**
+     * 获取有序集合（sorted set），按照分数从大到小排序，返回 Map 对象
+     * @param key 键
+     * @param start 开始位置，0 表示第一个元素，-1 表示最后一个元素
+     * @param stop 结束位置，0 表示第一个元素，-1 表示最后一个元素
+     * @returns Map 对象，key 为有序集合的成员，value 为成员的分数
+     */
+    zrevranking(key: RedisKey, start: number | string, stop: number | string): Promise<Map<string, number>>;
+    /**
+     * 获取有序集合（sorted set），按照分数从小到大排序，返回 Map 对象
+     * @param key 键
+     * @param start 开始位置，0 表示第一个元素，-1 表示最后一个元素
+     * @param stop 结束位置，0 表示第一个元素，-1 表示最后一个元素
+     * @returns Map 对象，key 为有序集合的成员，value 为成员的分数
+     */
+    zranking(key: RedisKey, start: number | string, stop: number | string): Promise<Map<string, number>>;
 }
 /**读写数据源实现类 */
 declare class ReadWriteDb extends DataSourceFactory {
@@ -358,5 +376,22 @@ declare class ExpressServer extends ServerFactory {
     start(port: number): void;
     private setDefaultMiddleware;
 }
+/**Socket IO 装饰器类 */
+declare class SocketIo {
+    public static setIoServer(app, ioSocketConfig);
+    /**
+     * Socket IO 事件装饰器
+     * @param event 事件名称
+     */
+    public static onEvent(event: string): (target: any, propertyKey: string) => void;
+    /**Socket IO 错误捕获装饰器 */
+    public static onError(target: any, propertyKey: string): void;
+    /**Socket IO 客户端断开连接事件装饰器 */
+    public static onDisconnect(target: any, propertyKey: string): void;
+    /**Socket IO 客户端连接成功事件装饰器 */
+    public static onConnected(target: any, propertyKey: string): void;
+}
+/**Socket IO 服务实现类 */
+declare const io: IoServer;
 
-export { ExpressServer, LogDefault, NodeCache, RabbitMQ, rabbitListener, ReadWriteDb, Redis, CacheFactory, DataSourceFactory, LogFactory, ServerFactory, AuthenticationFactory, next, reqBody, reqQuery, reqForm, reqParam, req, req as request, res, res as response, component, bean, resource, log, app, before, after, value, error, config, autoware, getBean, getComponent, schedule, getMapping, postMapping, requestMapping, setRouter, upload, jwt, insert, update, remove, select, param, resultType, cache, Model};
+export { ExpressServer, LogDefault, NodeCache, RabbitMQ, rabbitListener, redisSubscriber, ReadWriteDb, Redis, CacheFactory, DataSourceFactory, LogFactory, ServerFactory, AuthenticationFactory, next, reqBody, reqQuery, reqForm, reqParam, req, req as request, res, res as response, component, bean, resource, log, app, before, after, value, error, config, autoware, getBean, getComponent, schedule, getMapping, postMapping, requestMapping, setRouter, upload, jwt, insert, update, remove, select, param, resultType, cache, Model, SocketIo, io };
