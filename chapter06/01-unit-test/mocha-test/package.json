@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "test": "mocha --require ts-node/register ./test.ts"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.1",
+    "mocha": "10.2.0",
+    "chai": "4.3.7",
+    "ts-node": "^10.9.1"
+  }
+}

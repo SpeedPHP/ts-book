@@ -1,4 +1,4 @@
-import { app, log, autoware, ServerFactory } from "../../";
+import { app, log, autoware, ServerFactory } from "../../src";
 //import * as basicAuth from "express-basic-auth"
 let appServer = null;
 
