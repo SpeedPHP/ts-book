@@ -25,14 +25,14 @@
         "master": {
             "host": "localhost",
             "user": "root",
-            "password": "root",
+            "password": "123456",
             "database": "test"
         },
         "slave": [
             {
                 "host": "localhost",
                 "user": "root",
-                "password": "root",
+                "password": "123456",
                 "database": "test"
             }
         ]

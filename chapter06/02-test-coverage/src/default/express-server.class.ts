@@ -8,8 +8,9 @@ import * as expressSession from "express-session";
 import * as connectRedis from "connect-redis";
 import ServerFactory from "../factory/server-factory.class";
 import { setRouter } from "../route.decorator";
+import { SocketIo } from "../default/socket-io.class";
 import { value } from "../typespeed";
-import { bean, log, error, autoware } from "../core.decorator";
+import { bean, error, autoware, resource } from "../core.decorator";
 import { Redis } from "./redis.class";
 import AuthenticationFactory from "../factory/authentication-factory.class";
 
@@ -36,6 +37,12 @@ export default class ExpressServer extends ServerFactory {
     @value("redis")
     private redisConfig: object;
 
+    @value("socket")
+    private socketIoConfig: object;
+
+    @value("MAIN_PATH")
+    private mainPath: string;
+
     @autoware
     private redisClient: Redis;
 
@@ -53,14 +60,18 @@ export default class ExpressServer extends ServerFactory {
         this.middlewareList.push(middleware);
     }
 
-    public start(port: number, callback?: Function): any {
+    public start(port: number): any {
         this.middlewareList.forEach(middleware => {
             this.app.use(middleware);
         });
 
         this.setDefaultMiddleware();
- 
-        return this.app.listen(port, callback);
+        if(this.socketIoConfig) {
+            const newSocketApp = SocketIo.setIoServer(this.app, this.socketIoConfig);
+            return newSocketApp.listen(port);
+        }else{
+            return this.app.listen(port);
+        }
     }
 
     private setDefaultMiddleware() {
@@ -70,7 +81,7 @@ export default class ExpressServer extends ServerFactory {
             const viewConfig = this.view;
             this.app.engine(viewConfig["suffix"], consolidate[viewConfig["engine"]]);
             this.app.set('view engine', viewConfig["suffix"]);
-            this.app.set('views', process.cwd() + viewConfig["path"]);
+            this.app.set('views', this.mainPath + viewConfig["path"]);
         }
 
         if (this.session) {
@@ -87,7 +98,7 @@ export default class ExpressServer extends ServerFactory {
         }
 
         if (this.favicon) {
-            const faviconPath = process.cwd() + this.favicon;
+            const faviconPath = this.mainPath + this.favicon;
             this.app.use(serveFavicon(faviconPath));
         }
 
@@ -102,7 +113,7 @@ export default class ExpressServer extends ServerFactory {
         this.app.use(this.authentication.preHandle);
 
         if (this.static) {
-            const staticPath = process.cwd() + this.static;
+            const staticPath = this.mainPath + this.static;
             this.app.use(express.static(staticPath))
         }
         setRouter(this.app);
