@@ -47,4 +47,5 @@ function log(message?: any, ...optionalParams: any[]) {
     }
 }
 
+
 export { onClass, bean, autoware, inject, log };

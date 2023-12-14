@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import * as fs from "fs"
+import * as cron from "cron";
 import * as walkSync from "walk-sync";
 import BeanFactory from "./bean-factory.class";
 import LogFactory from "./factory/log-factory.class";
@@ -139,6 +140,10 @@ function after(constructorFunction, methodName: string) {
     };
 }
 
+function schedule(cronTime: string | Date) {
+    return (target: any, propertyKey: string) => {
+        new cron.CronJob(cronTime, target[propertyKey]).start();
+    }
+}
 
-
-export { onClass, bean, autoware, inject, log, app, before, after, value };
+export { onClass, bean, autoware, inject, log, app, before, after, value, schedule };
