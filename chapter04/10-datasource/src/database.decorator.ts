@@ -73,7 +73,6 @@ function select(sql: string) {
 function resultType(dataClass) {
     return function (target, propertyKey: string) {
         resultTypeMap.set([target.constructor.name, propertyKey].toString(), new dataClass());
-        //never return
     };
 }
 
@@ -89,23 +88,27 @@ async function queryForExecute(sql: string, args: any[], target, propertyKey: st
     const [newSql, sqlValues] = convertSQLParams(sql, target, propertyKey, args);
     return actionExecute(newSql, sqlValues);
 }
-
+// SQL执行函数
 async function actionExecute(newSql, sqlValues): Promise<ResultSetHeader> {
     const writeConnection = await getBean(DataSourceFactory).writeConnection();
     const [result] = await writeConnection.query(newSql, sqlValues);
     return <ResultSetHeader>result;
 }
-
+// SQL查询函数
 async function actionQuery(newSql, sqlValues, dataClassType?) {
+    // 获取读库连接
     const readConnection = await getBean(DataSourceFactory).readConnection();
+    // 查询
     const [rows] = await readConnection.query(newSql, sqlValues);
     if (rows === null || Object.keys(rows).length === 0 || !dataClassType) {
         return rows;
     }
+    // 循环赋值给数据类
     const records = [];
     for (const rowIndex in rows) {
         const entity = new dataClassType();
         Object.getOwnPropertyNames(entity).forEach((propertyRow) => {
+            // 匹配数据类的属性和结果字段
             if (rows[rowIndex].hasOwnProperty(propertyRow)) {
                 Object.defineProperty(entity, propertyRow, Object.getOwnPropertyDescriptor(rows[rowIndex], propertyRow));
             }

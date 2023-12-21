@@ -3,6 +3,7 @@ chaiObj.use(require("chai-http"));
 
 describe("Test First page", () => {
     const testAddr = `http://${process.env.LOCAL_HOST || "localhost"}:8081`;
+    // 准备数据进行批量测试
     const firstPageRequests = [
         {
             "url": "/first",
@@ -28,6 +29,7 @@ describe("Test First page", () => {
             "expect": "This is a error log",
         }
     ]
+    // 遍历数据，使用chai-http发起请求，匹配返回结果
     firstPageRequests.forEach((testRequest) => {
         it(testRequest.url, (done) => {
             chaiObj.request(testAddr).get(testRequest.url).end((err, res) => {

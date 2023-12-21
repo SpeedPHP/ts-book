@@ -13,32 +13,40 @@ export default class Model {
         if (table) this.table = table;
     }
 
-    async findAll<T>(conditions: object | string, sort: string | object = '', fields: string | [string] = '*', limit?: number | object): Promise<T[]> {
-        const { sql, values } = this.where(conditions);
-        if (typeof fields !== 'string') {
-            fields = fields.join(", ");
-        }
-        if (typeof sort !== 'string') {
-            sort = Object.keys(sort).map(s => {
-                return s + (sort[s] === 1 ? " ASC" : " DESC");
-            }).join(", ");
-        }
-        let newSql = 'SELECT ' + fields + ' FROM ' + this.table + ' WHERE ' + sql + " ORDER BY " + sort;
-        if (typeof limit === 'number') {
-            newSql += ' LIMIT ' + limit
-        } else if (typeof limit === 'object') {
-            const total = await actionQuery('SELECT COUNT(*) AS M_COUNTER  FROM ' + this.table + ' WHERE ' + sql, values);
-            if (total === undefined || total[0]['M_COUNTER'] === 0) {
-                return [];
-            }
-            if (limit['pageSize'] !== undefined && limit['pageSize'] < total[0]['M_COUNTER']) {
-                const pager = this.pager(limit["page"] || 1, total[0]['M_COUNTER'], limit["pageSize"] || 10, limit["scope"] || 10);
-                newSql += ' LIMIT ' + pager['offset'] + ',' + pager['limit'];
-                this.page = pager;
-            }
-        }
-        return <T[]>await actionQuery(newSql, values);
+async findAll<T>(conditions: object | string, sort: string | object = '', fields: string | [string] = '*', limit?: number | object): Promise<T[]> {
+    // 处理查询条件
+    const { sql, values } = this.where(conditions);
+    // 处理所需字段
+    if (typeof fields !== 'string') {
+        fields = fields.join(", ");
     }
+    // 处理结果排序逻辑
+    if (typeof sort !== 'string') {
+        sort = Object.keys(sort).map(s => {
+            return s + (sort[s] === 1 ? " ASC" : " DESC");
+        }).join(", ");
+    }
+    // 构建查询SQL
+    let newSql = 'SELECT ' + fields + ' FROM ' + this.table + ' WHERE ' + sql + " ORDER BY " + sort;
+    // 处理分页
+    if (typeof limit === 'number') {
+        // 当分页参数只是简单的数值，则直接拼装
+        newSql += ' LIMIT ' + limit
+    } else if (typeof limit === 'object') {
+        // 当分页参数是对象时，则自动查询总记录数，然后进行分页计算
+        const total = await actionQuery('SELECT COUNT(*) AS M_COUNTER  FROM ' + this.table + ' WHERE ' + sql, values);
+        if (total === undefined || total[0]['M_COUNTER'] === 0) {
+            return [];
+        }
+        if (limit['pageSize'] !== undefined && limit['pageSize'] < total[0]['M_COUNTER']) {
+            // 使用pager()方法进行分页计算
+            const pager = this.pager(limit["page"] || 1, total[0]['M_COUNTER'], limit["pageSize"] || 10, limit["scope"] || 10);
+            newSql += ' LIMIT ' + pager['offset'] + ',' + pager['limit'];
+            this.page = pager;
+        }
+    }
+    return <T[]>await actionQuery(newSql, values);
+}
 
     async create(rows): Promise<number> {
         let newSql = "";
@@ -99,11 +107,13 @@ export default class Model {
     }
 
     pager(page, total, pageSize = 10, scope = 10) {
-        this.page = null
+        this.page = null;
+        // 总记录数不能为空
         if (total === undefined) throw new Error('Pager total would not be undefined')
         if (total > pageSize) {
             let totalPage = Math.ceil(total / pageSize)
             page = Math.min(Math.max(page, 1), total)
+            // 设置分页数据
             this.page = {
                 'total': total,
                 'pageSize': pageSize,
@@ -117,6 +127,7 @@ export default class Model {
                 'offset': (page - 1) * pageSize,
                 'limit': pageSize
             }
+            // 按显示范围计算所需页码
             if (totalPage <= scope) {
                 this.page.allPages = this.range(1, totalPage)
             } else if (page <= scope / 2) {
@@ -169,7 +180,7 @@ export default class Model {
         }
         return result
     }
-
+    // 取得特定范围的函数
     private range(start, end) {
         return [...Array(end - start + 1).keys()].map(i => i + start);
     }

@@ -47,25 +47,32 @@ function Delete(sql: string) {
         };
     };
 }
-
+// 查询装饰器
 function Select(sql: string) {
     return (target, propertyKey: string, descriptor: PropertyDescriptor) => {
         descriptor.value = async (...args: any[]) => {
             let newSql = sql;
             let sqlValues = [];
             if (args.length > 0) {
+                // 处理参数绑定
                 [newSql, sqlValues] = convertSQLParams(args, target, propertyKey, newSql);
             }
             let rows;
+            // 检查当前查询是否需要缓存
             if (cacheBean && cacheDefindMap.has([target.constructor.name, propertyKey].toString())) {
+                // 获取表名和表版本号
                 const [tableName, tableVersion] = getTableAndVersion("select", newSql);
+                // 构建缓存键
                 const cacheKey = JSON.stringify([tableName, tableVersion, newSql, sqlValues]);
                 if (cacheBean.get(cacheKey)) {
+                    // 如果有结果则返回
                     rows = cacheBean.get(cacheKey);
                 } else {
+                    // 查询结果
                     [rows] = await pool.query(newSql, sqlValues);
                     log("cache miss, and select result for " + rows);
                     const ttl = cacheDefindMap.get([target.constructor.name, propertyKey].toString());
+                    // 存入缓存
                     cacheBean.set(cacheKey, rows, ttl);
                 }
             } else {
@@ -76,13 +83,16 @@ function Select(sql: string) {
                 return;
             }
             const records = [];
+            // 取得@ResultType装饰器记录的数据类型
             const resultType = resultTypeMap.get([target.constructor.name, propertyKey].toString());
             if(!resultType){
                 return rows;
             }
+            // 遍历查询结果记录，每行记录都创建一个数据类来装载
             for (const rowIndex in rows) {
                 const entity = Object.create(resultType);
                 Object.getOwnPropertyNames(resultType).forEach(function (propertyRow) {
+                    // 匹配数据类的属性和字段名，对应赋值
                     if (rows[rowIndex].hasOwnProperty(propertyRow)) {
                         Object.defineProperty(
                             entity,
@@ -91,6 +101,7 @@ function Select(sql: string) {
                         );
                     }
                 });
+                // 组成数据类数组
                 records.push(entity);
             }
             return records;
@@ -148,6 +159,7 @@ function convertSQLParams(args: any[], target: any, propertyKey: string, decorat
 
 function cache(ttl: number) {
     return function (target: any, propertyKey: string) {
+        // 收集需要缓存的查询方法和缓存过期时间
         cacheDefindMap.set([target.constructor.name, propertyKey].toString(), ttl);
         if (cacheBean == null) {
             const cacheFactory = BeanFactory.getBean(CacheFactory);

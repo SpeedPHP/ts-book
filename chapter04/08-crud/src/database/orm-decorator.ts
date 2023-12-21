@@ -39,10 +39,13 @@ export default class Model {
         let newSql = "";
         let values = [];
         if (!Array.isArray(rows)) {
+            // 插入一条数据时，转换成多维数组
             rows = [rows];
         }
+
         const firstRow = rows[0];
         newSql += 'INSERT INTO ' + this.table + ' (' + Object.keys(firstRow).map((field) => '`' + field + '`').join(', ') + ') VALUES';
+        // 遍历构建插入SQL
         rows.forEach((row) => {
             const valueRow = [];
             Object.keys(row).map((field) => {

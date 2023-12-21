@@ -6,15 +6,18 @@ export default class NodeCache extends CacheFactory {
     private NodeCache: any;
     private nodeCacheOptions;
 
+    // 注入缓存配置
     @value("cache")
     private config : object;
 
+    // 实例化当前缓存对象
     constructor() {
         super();
         this.nodeCacheOptions = this.config || { stdTTL: 3600 };
         this.NodeCache = new cache();
     }
 
+    // 提供缓存对象
     @bean
     public getNodeCache(): CacheFactory {
         return new NodeCache();

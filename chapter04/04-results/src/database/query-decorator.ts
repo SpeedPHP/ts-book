@@ -22,12 +22,14 @@ function Update(sql: string) {
     };
 }
 
+// 查询装饰器
 function Select(sql: string) {
     return (target, propertyKey: string, descriptor: PropertyDescriptor) => {
         descriptor.value = async (...args: any[]) => {
             let newSql = sql;
             let sqlValues = [];
             if (args.length > 0) {
+                // 处理参数绑定
                 [newSql, sqlValues] = convertSQLParams(args, target, propertyKey, newSql);
             }
             const [rows] = await pool.query(newSql, sqlValues);
@@ -36,12 +38,15 @@ function Select(sql: string) {
             }
 
             const records = [];
+            // 取得@ResultType装饰器记录的数据类型
             const resultType = resultTypeMap.get(
                 [target.constructor.name, propertyKey].toString(),
             );
+            // 遍历查询结果记录，每行记录都创建一个数据类来装载
             for (const rowIndex in rows) {
                 const entity = Object.create(resultType);
                 Object.getOwnPropertyNames(resultType).forEach(function (propertyRow) {
+                    // 匹配数据类的属性和字段名，对应赋值
                     if (rows[rowIndex].hasOwnProperty(propertyRow)) {
                         Object.defineProperty(
                             entity,
@@ -50,6 +55,7 @@ function Select(sql: string) {
                         );
                     }
                 });
+                // 组成数据类数组
                 records.push(entity);
             }
             return records;

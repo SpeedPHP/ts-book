@@ -89,18 +89,19 @@ async function queryForExecute(sql: string, args: any[], target, propertyKey: st
     const [newSql, sqlValues] = convertSQLParams(sql, target, propertyKey, args);
     return actionExecute(newSql, sqlValues);
 }
-
+// 执行SQL命令函数
 async function actionExecute(newSql, sqlValues): Promise<ResultSetHeader> {
     const [result] = await pool.query(newSql, sqlValues);
     return <ResultSetHeader>result;
 }
-
+// 执行SQL查询函数
 async function actionQuery(newSql, sqlValues, dataClassType?) {
     const [rows] = await pool.query(newSql, sqlValues);
     if (rows === null || Object.keys(rows).length === 0 || !dataClassType) {
         return rows;
     }
     const records = [];
+    // 结果赋值给数据类
     for (const rowIndex in rows) {
         const entity = new dataClassType();
         Object.getOwnPropertyNames(entity).forEach((propertyRow) => {
