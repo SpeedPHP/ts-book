@@ -56,6 +56,7 @@ function bean(target: any, propertyName: string, descriptor: PropertyDescriptor)
 
 function value(configPath: string): any {
     return function (target: any, propertyKey: string) {
+        // 检查配置是否存在，避免报错
         if (globalConfig === undefined) {
             Object.defineProperty(target, propertyKey, {
                 get: () => {

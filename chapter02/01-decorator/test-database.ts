@@ -1,3 +1,4 @@
+// 数据库测试类
 class TestDatabase {
   private defaultId: number = 1;
   selectById(req: Request, res: Response): void {

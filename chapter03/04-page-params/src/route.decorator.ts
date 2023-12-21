@@ -89,11 +89,12 @@ function jwt(jwtConfig) {
     }
   }
 }
-
+// 前置切面装饰器
 function before(constructorFunction, methodName: string) {
   const targetBean = getComponent(constructorFunction);
   return function (target, propertyKey: string) {
       const currentMethod = targetBean[methodName];
+      // 检查方法参数的个数，并记录以备参数装饰器使用
       if(currentMethod.length > 0){
         routerParamsTotal[[constructorFunction.name, methodName].toString()] = currentMethod.length;
       }
@@ -106,6 +107,7 @@ function before(constructorFunction, methodName: string) {
   };
 }
 
+// 后置切面装饰器
 function after(constructorFunction, methodName: string) {
   const targetBean = getComponent(constructorFunction);
   return function (target, propertyKey: string) {
@@ -123,26 +125,31 @@ function after(constructorFunction, methodName: string) {
   };
 }
 
+// Request对象的参数装饰器
 function req(target: any, propertyKey: string, parameterIndex: number) {
   const key = [target.constructor.name, propertyKey, parameterIndex].toString();
   routerParams[key] = (req, res, next) => req;
 }
 
+// Response对象的参数装饰器
 function res(target: any, propertyKey: string, parameterIndex: number) {
   const key = [target.constructor.name, propertyKey, parameterIndex].toString();
   routerParams[key] = (req, res, next) => res;
 }
 
+// Next函数的参数装饰器
 function next(target: any, propertyKey: string, parameterIndex: number) {
   const key = [target.constructor.name, propertyKey, parameterIndex].toString();
   routerParams[key] = (req, res, next) => next;
 }
 
+// 取得请求体内容的参数装饰器
 function reqBody(target: any, propertyKey: string, parameterIndex: number) {
   const key = [target.constructor.name, propertyKey, parameterIndex].toString();
   routerParams[key] = (req, res, next) => req.body;
 }
 
+// 取得请求属性的参数装饰器
 function reqParam(target: any, propertyKey: string, parameterIndex: number) {
   const key = [target.constructor.name, propertyKey, parameterIndex].toString();
   const paramName = getParamInFunction(target[propertyKey], parameterIndex);
@@ -155,12 +162,14 @@ function getParamInFunction(fn: Function, index: number) {
   return result[index] || null;
 }
 
+// 取得Query属性值的参数装饰器
 function reqQuery(target: any, propertyKey: string, parameterIndex: number) {
   const key = [target.constructor.name, propertyKey, parameterIndex].toString();
   const paramName = getParamInFunction(target[propertyKey], parameterIndex);
   routerParams[key] = (req, res, next) => req.query[paramName];
 }
 
+// 取得表单属性值的参数装饰器
 function reqForm(paramName: string) {
   return (target: any, propertyKey: string, parameterIndex: number) => {
     const key = [target.constructor.name, propertyKey, parameterIndex].toString();

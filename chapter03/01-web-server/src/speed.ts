@@ -9,14 +9,15 @@ function app<T extends { new(...args: any[]): {} }>(constructor: T) {
 
     const testDir = process.cwd() + "/test";
     const testFiles = walkSync(testDir, { globs: ['**/*.ts'] });
-
+    // 异步转同步执行
     (async function () {
         try {
+            // 载入框架的TS文件，执行其中装饰器
             for (let p of srcFiles) {
                 let moduleName = p.replace(".d.ts", "").replace(".ts", "");
                 await import(srcDir + "/" + moduleName);
             }
-
+            // 载入开发者的TS文件，执行装饰器并覆盖
             for (let p of testFiles) {
                 let moduleName = p.replace(".d.ts", "").replace(".ts", "");
                 await import(testDir + "/" + moduleName);
@@ -24,6 +25,7 @@ function app<T extends { new(...args: any[]): {} }>(constructor: T) {
         } catch (err) {
             console.error(err);
         }
+        // 开启用户程序
         log("main start")
         const main = new constructor();
         main["main"]();

@@ -7,8 +7,8 @@ export default class TestLog {
         log("TestLog constructor");
     }
 
-@schedule("* * * * * *")
-myTimer() {
-    log("myTimer running");
-}
+    @schedule("* * * * * *")
+    myTimer() {
+        log("myTimer running");
+    }
 }

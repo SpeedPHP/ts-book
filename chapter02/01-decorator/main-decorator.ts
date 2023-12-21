@@ -1,30 +1,38 @@
 import "reflect-metadata";
-
+// 带参数的类装饰器
 @atClassWithArgs(1, 2, 3)
 class SecondClass {}
 
+// 不带参数的类装饰器
 @atClass
 export default class FirstClass {
 
+    // 带参数的成员变量装饰器
     @atPropertyWithArgs("Li", "Mei")
     private name: string;
 
+    // 不带参数的成员变量装饰器
     @atProperty
     private age: number;
 
+    // 不带参数的访问器装饰器
     @atAccessor
     get newname(): string {
         return this.name;
     }
 
+    // 不带参数的方法装饰器
     @atMethod
     changeName(name: string): SecondClass {
         this.name = name;
         return new SecondClass();
     }
 
+    // 带参数的方法装饰器
     @atMethodWithArgs("New", "Type")
-    change(name: string, @atParameter age: number): void {
+    change(name: string, 
+        // 不带参数的参数装饰器
+        @atParameter age: number): void {
         this.age = age;
         this.name = name;
     }

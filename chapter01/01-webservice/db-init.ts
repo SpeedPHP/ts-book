@@ -13,7 +13,9 @@ class First implements Page {
 
 class User implements Page {
     page(response: ServerResponse): void {
+        // 连接数据库
         const connection: Connection = createConnection({ host: 'localhost', user: 'root', "password": "123456", database: 'test' });
+        // 查询数据，然后显示
         connection.query('SELECT * FROM `user`', (err, results) => {
             console.log(err)
             response.end(JSON.stringify(results));

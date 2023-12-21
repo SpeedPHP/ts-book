@@ -13,6 +13,7 @@ class First implements Page {
 
 class User implements Page {
     page(response: ServerResponse): void {
+        // 用getInstance()方法取得两个数据库连接对象
         const database: Database = Database.getInstance();
         const databaseCopy: Database = Database.getInstance();
         console.log("两个对象是否一致：", database === databaseCopy)
@@ -34,12 +35,14 @@ class Database {
     private constructor(connection: Connection) {
         this.connection = connection;
     }
+    // 单例模式
     static getInstance() {
         if (!Database.instance) {
             Database.instance = new Database(createConnection({ host: 'localhost', user: 'root', "password": "root", database: 'test' }));
         }
         return Database.instance;
     }
+    // 数据库查询方法，参数为sql语句和回调函数
     query(sql: string, callback: (err: any, results: any) => void): void {
         this.connection.query('SELECT * FROM `user`', callback);
     }
