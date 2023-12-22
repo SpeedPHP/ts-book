@@ -74,10 +74,12 @@ function swaggerMiddleware(app: any, options?: {}) {
         })
     );
 }
-
+// 接管路由装饰器，收集信息
 function toMapping(method: MethodMappingType, path: string, mappingMethod: Function) {
+    // 调用TypeSpeed框架的路由装饰器，取得回调函数
     const handler = mappingMethod(path);
     return (target: any, propertyKey: string) => {
+        // 收集信息，以便在显示JSDoc时分析
         const key = [target.constructor.name, propertyKey].toString();
         if (!routerMap.has(key)) {
             routerMap.set(key, {
@@ -88,10 +90,11 @@ function toMapping(method: MethodMappingType, path: string, mappingMethod: Funct
                 "propertyKey": propertyKey
             });
         }
+        // 继续使用TypeSpeed框架的回调函数
         return handler(target, propertyKey);
     }
 }
-
+// 新的路由装饰器
 const getMapping = (value: string) => toMapping("get", value, tsGetMapping);
 const postMapping = (value: string) => toMapping("post", value, tsPostMapping);
 const requestMapping = (value: string) => toMapping("all", value, tsRequestMapping);

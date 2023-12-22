@@ -90,10 +90,10 @@ export default class ExpressServer extends ServerFactory {
             if (req.accepts('html')) {
                 res.render(process.cwd() + "/static/error-page/404.html");
             } else if (req.accepts('json')) {
-                // respond with json
+                // 当浏览器需要JSON格式时，则返回JSON错误提示
                 res.json({ error: 'Not found' });
             } else {
-                // default to plain-text. send()
+                // 默认情况返回文本类型错误提示
                 res.type('txt').send('Not found');
             }
         });
@@ -107,10 +107,10 @@ export default class ExpressServer extends ServerFactory {
             if (req.accepts('html')) {
                 res.render(process.cwd() + "/static/error-page/500.html");
             } else if (req.accepts('json')) {
-                // respond with json
+                // 当浏览器需要JSON格式时，则返回JSON错误提示
                 res.json({ error: 'Internal Server Error' });
             } else {
-                // default to plain-text. send()
+                // 默认情况返回文本类型错误提示
                 res.type('txt').send('Internal Server Error');
             }
         });

@@ -68,16 +68,24 @@ function reqForm(paramName: string) {
 }
 
 function swaggerMiddleware(app: any, options?: { path: string, "allow-ip": string[] }, packageJsonPath?: string) {
+    // swagger页面的地址
     const path = options && options.path || "/docs";
+    // 拼装Swagger文档的地址
     const swaggerJsonPath = path + "/swagger.json";
+    // 构建检查浏览器IP是否在白名单内的中间件
     const checkAllowIp = (req, res, next) => {
+        // 白名单配置
         const allowIp = options && options["allow-ip"] || ["127.0.0.1", "::1"];
+        // 从请求头取得浏览器IP
         const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
         if (allowIp.indexOf(ip) !== -1) return next();
+        // 当浏览器IP不在白名单内时，返回403
         res.status(403).send("Forbidden");
     }
     const swggerOptions = { swaggerOptions: { url: swaggerJsonPath } }
+    // 设置swagger.json的响应中间件
     app.get(swaggerJsonPath, checkAllowIp, (req, res) => res.json(swaggerDocument(packageJsonPath)));
+    // 显示swagger页面的中间件
     app.use(path, checkAllowIp, swaggerUi.serveFiles(null, swggerOptions), swaggerUi.setup(null, swggerOptions));
 }
 
@@ -100,8 +108,10 @@ function toMapping(method: MethodMappingType, path: string, mappingMethod: Funct
 
 function swaggerDocument(packageJsonPath?: string): object {
     if (routerMap.size === 0) return;
+    // 构建swagger文档对象
     const apiDocument = new ApiDocument();
     if (packageJsonPath && fs.existsSync(packageJsonPath)) {
+        // 从项目package.json中读取项目信息
         try {
             const jsonContents = fs.readFileSync(packageJsonPath, 'utf8');
             const packageJson = JSON.parse(jsonContents);
@@ -114,20 +124,26 @@ function swaggerDocument(packageJsonPath?: string): object {
             error(`Error reading file from disk: ${err}`);
         }
     }
-
+    // 遍历路由
     routerMap.forEach((router, key) => {
+        // 创建路由ApiPath对象，同时处理请求响应类型
         const apiPath = createApiPath(router);
         if (requestBodyMap.has(key)) {
+            // 处理请求体信息
             handleRequestBody(apiPath, requestBodyMap.get(key));
         }
         if (requestParamMap.has(key)) {
+            // 处理请求参数信息
             handleRequestParams(apiPath, requestParamMap.get(key));
         }
+        // 添加到文档对象中
         apiDocument.addPath(router.path, apiPath);
     });
+    // 遍历对象实体信息，并增加到文档对象中
     schemaMap.forEach((schema) => {
         apiDocument.addSchema(schema);
     });
+    // 文档对象将收集的信息转换为JSDoc文件输出
     return apiDocument.toDoc();
 };
 
@@ -138,6 +154,7 @@ const requestMapping = (value: string) => toMapping("all", value, tsRequestMappi
 function handleRealType(realType: any, callback: Function) {
     if (typeof realType === "function") {
         if (/^class\s/.test(realType.toString())) {
+            // 当输入类型是开发者自定义类型时，则调用handleComponent()进一步获取其方法
             handleComponent(realType);
             callback(ApiItem.fromType("$ref", realType.name));
         } else {
@@ -152,6 +169,7 @@ function handleRealType(realType: any, callback: Function) {
     } else if (realType["TΦ"] === '[') {
         const deepRealType = realType["e"];
         if (/^class\s/.test(deepRealType.toString())) {
+            // 当数组泛型是开发者自定义类型时，则调用handleComponent()进一步获取其方法
             handleComponent(deepRealType);
             callback(ApiItem.fromArray("$ref", deepRealType.name));
         } else {
@@ -185,16 +203,21 @@ function handleRequestBody(apiPath: ApiPath, bodyParam: RequestBodyMapType) {
 
 function createApiPath(router: RouterType): ApiPath {
     const { method, clazz, target, propertyKey } = router;
+    // 创建ApiPath对象
     const apiPath = new ApiPath(method, clazz, propertyKey);
+    // 用反射取得路由的响应类型
     const responseType = reflect(target[propertyKey]).returnType;
     if(!responseType || !responseType["_ref"]){
+        // 当响应类型不存在时，只需返回200 OK
         apiPath.addResponse("200", "OK");
         return apiPath;
     }
     let realType = responseType["_ref"];
     if (responseType.isPromise()) {
+        // 当响应类型为Promise，则需要取得下一个层次的类型，即Promise的泛型类型
         realType = responseType["_ref"]["p"][0];
     }
+    // 解析响应类型，类型信息将收集到schemaMap
     handleRealType(realType, (item?: ApiItem) => {
         if (item === undefined) {
             apiPath.addResponse("200", "OK");
